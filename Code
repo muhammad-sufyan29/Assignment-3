@@ -1,0 +1,214 @@
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView, Image } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+// Signup Screen
+const SignupScreen = ({ navigation }) => {
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+
+  const validateSignup = () => {
+    const isValidEmail = email.includes('@') && email.includes('.');
+    const isValidPhone = phone.startsWith('+923') && phone.length === 12;
+    const isValidUsername = /^[a-zA-Z]+$/.test(username);
+
+    if (!isValidUsername) {
+      Alert.alert('Invalid Username', 'Username should contain alphabets only.');
+      return;
+    }
+    if (!isValidEmail) {
+      Alert.alert('Invalid Email', 'Please enter a valid email address.');
+      return;
+    }
+    if (!isValidPhone) {
+      Alert.alert('Invalid Phone Number', 'Phone number should match the format +92-3xx-xxxxxxx.');
+      return;
+    }
+    if (password.length < 8) {
+      Alert.alert('Weak Password', 'Password should be at least 8 characters long.');
+      return;
+    }
+    Alert.alert('Signup Successful', 'You can now log in.');
+    navigation.navigate('Login');
+  };
+
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.header}>Signup</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        keyboardType="email-address"
+        value={email}
+        onChangeText={setEmail}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Phone (+92-3xx-xxxxxxx)"
+        keyboardType="phone-pad"
+        value={phone}
+        onChangeText={setPhone}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+      />
+      <Button title="Signup" onPress={validateSignup} />
+    </ScrollView>
+  );
+};
+
+// Login Screen
+const LoginScreen = ({ navigation }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const validateLogin = () => {
+    if (!email || !password) {
+      Alert.alert('Login Failed', 'Please fill in all fields.');
+      return;
+    }
+    Alert.alert('Login Successful', 'Welcome back!');
+    navigation.navigate('Profile');
+  };
+
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.header}>Login</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        keyboardType="email-address"
+        value={email}
+        onChangeText={setEmail}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+      />
+      <Button title="Login" onPress={validateLogin} />
+    </ScrollView>
+  );
+};
+
+// Profile Screen
+const ProfileScreen = () => {
+  return (
+    <ScrollView style={styles.container}>
+      <View style={styles.profileSection}>
+        <Text style={styles.profileHeader}>My Profile</Text>
+        <View style={styles.profileInfo}>
+          <Image
+            source={{ uri: 'https://snack-code-uploads.s3.us-west-1.amazonaws.com/~asset/0efe994aab7558317ad60fa5b9c8797e' }}
+            style={styles.profileImage}
+          />
+          <Text style={styles.profileName}>Muhammad Sufyan 045</Text>
+          <View style={styles.statsSection}>
+            <View style={styles.stat}>
+              <Text style={styles.statNumber}>14.850</Text>
+              <Text style={styles.statLabel}>Product Sells</Text>
+            </View>
+            <View style={styles.stat}>
+              <Text style={styles.statNumber}>30bil+</Text>
+              <Text style={styles.statLabel}>Earning</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </ScrollView>
+  );
+};
+
+// Navigation Setup
+const Stack = createStackNavigator();
+
+const App = () => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Signup">
+        <Stack.Screen name="Signup" component={SignupScreen} />
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: 20,
+    backgroundColor: '#FFFBEA',
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 15,
+  },
+  profileSection: {
+    backgroundColor: '#F6E3C3',
+    borderRadius: 10,
+    padding: 20,
+    marginBottom: 20,
+  },
+  profileHeader: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  profileInfo: {
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  profileImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: 10,
+  },
+  profileName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  statsSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+    width: '100%',
+  },
+  stat: {
+    alignItems: 'center',
+  },
+  statNumber: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  statLabel: {
+    color: 'gray',
+  },
+});
+
+export default App;
